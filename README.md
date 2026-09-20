@@ -31,9 +31,10 @@ cargo build --release
 cargo test --workspace
 ```
 
-Note: Some integration tests reference contract WASM artifacts from the parent
-contracts workspace. These tests gracefully skip when the WASM files are not
-present (e.g., in standalone builds or CI environments without the Stellar CLI).
+The integration tests require contract WASM artifacts from the contracts
+workspace. They fail closed when those artifacts are missing; a green test run
+must therefore include the real artifact-backed execution checks. The sandbox
+CI workflow provisions the pinned contracts workspace before running tests.
 
 ## Lint
 

@@ -13,7 +13,20 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions-rust-lang/setup-rust-toolchain@v1
       - uses: Swatinem/rust-cache@v2
+      - name: Checkout pinned contracts workspace
+        uses: actions/checkout@v4
+        with:
+          repository: StellarForgeDev/stellar-forge-contracts
+          ref: 49da0069198dc3864726a5e954ede0d3d7df0f00
+          path: contracts-source
+          submodules: recursive
+      - name: Build contract artifacts for integration tests
+        run: cargo build --manifest-path contracts-source/Cargo.toml --target wasm32v1-none --release --workspace --exclude sandbox-runner --exclude greeter --exclude test-asset
+        env:
+          CARGO_TARGET_DIR: ${{ github.workspace }}/../../target
       - run: cargo fmt --all -- --check
       - run: cargo clippy --workspace -- -D warnings
       - run: cargo test --workspace
+        env:
+          CARGO_TARGET_DIR: ${{ github.workspace }}/../../target
       - run: cargo build --release

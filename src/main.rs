@@ -743,6 +743,15 @@ fn runner_error(message: String) -> Value {
 }
 
 #[cfg(test)]
+fn require_wasm_artifact(path: &str) -> &str {
+    assert!(
+        std::path::Path::new(path).exists(),
+        "required sandbox WASM artifact is missing: {path}"
+    );
+    path
+}
+
+#[cfg(test)]
 mod tests {
     use super::*;
 
@@ -755,6 +764,14 @@ mod tests {
 
     fn params(value: Value) -> Vec<ParamSpec> {
         parse_param_specs(&value).unwrap()
+    }
+
+    #[test]
+    fn missing_artifact_fails_closed() {
+        let result = std::panic::catch_unwind(|| {
+            require_wasm_artifact("this-artifact-does-not-exist.wasm");
+        });
+        assert!(result.is_err());
     }
 
     #[test]
@@ -850,7 +867,7 @@ mod tests {
             "/../../target/wasm32v1-none/release/token.wasm"
         );
         if !std::path::Path::new(wasm).exists() {
-            return;
+            require_wasm_artifact(wasm);
         }
         let request = json!({
             "wasmPath": wasm,
@@ -942,7 +959,8 @@ mod tests {
         if !std::path::Path::new(payment_wasm).exists()
             || !std::path::Path::new(token_wasm).exists()
         {
-            return;
+            require_wasm_artifact(payment_wasm);
+            require_wasm_artifact(token_wasm);
         }
         let request = json!({
             "wasmPath": payment_wasm,
@@ -1031,7 +1049,8 @@ mod tests {
         );
         if !std::path::Path::new(escrow_wasm).exists() || !std::path::Path::new(token_wasm).exists()
         {
-            return;
+            require_wasm_artifact(escrow_wasm);
+            require_wasm_artifact(token_wasm);
         }
         let request = json!({
             "wasmPath": escrow_wasm,
@@ -1153,7 +1172,7 @@ mod tests {
             "/../../target/wasm32v1-none/release/access_control.wasm"
         );
         if !std::path::Path::new(access_control_wasm).exists() {
-            return;
+            require_wasm_artifact(access_control_wasm);
         }
         let request = json!({
             "wasmPath": access_control_wasm,
@@ -1295,7 +1314,7 @@ mod tests {
             "/../../target/wasm32v1-none/release/access_control.wasm"
         );
         if !std::path::Path::new(access_control_wasm).exists() {
-            return;
+            require_wasm_artifact(access_control_wasm);
         }
         let request = json!({
             "wasmPath": access_control_wasm,
@@ -1370,7 +1389,7 @@ mod tests {
             "/../../target/wasm32v1-none/release/multi_signature.wasm"
         );
         if !std::path::Path::new(multi_wasm).exists() {
-            return;
+            require_wasm_artifact(multi_wasm);
         }
         let env = Env::default();
         use soroban_sdk::testutils::Address as _;
@@ -1487,14 +1506,14 @@ mod tests {
             "/../../target/wasm32v1-none/release/subscription.wasm"
         );
         if !std::path::Path::new(sub_wasm).exists() {
-            return;
+            require_wasm_artifact(sub_wasm);
         }
         let token_wasm = concat!(
             env!("CARGO_MANIFEST_DIR"),
             "/../../target/wasm32v1-none/release/token.wasm"
         );
         if !std::path::Path::new(token_wasm).exists() {
-            return;
+            require_wasm_artifact(token_wasm);
         }
         let env = Env::default();
         use soroban_sdk::testutils::Address as _;
@@ -1618,14 +1637,14 @@ mod tests {
             "/../../target/wasm32v1-none/release/vesting.wasm"
         );
         if !std::path::Path::new(vesting_wasm).exists() {
-            return;
+            require_wasm_artifact(vesting_wasm);
         }
         let token_wasm = concat!(
             env!("CARGO_MANIFEST_DIR"),
             "/../../target/wasm32v1-none/release/token.wasm"
         );
         if !std::path::Path::new(token_wasm).exists() {
-            return;
+            require_wasm_artifact(token_wasm);
         }
         let env = Env::default();
         use soroban_sdk::testutils::Address as _;
@@ -1763,14 +1782,14 @@ mod tests {
             "/../../target/wasm32v1-none/release/staking.wasm"
         );
         if !std::path::Path::new(staking_wasm).exists() {
-            return;
+            require_wasm_artifact(staking_wasm);
         }
         let token_wasm = concat!(
             env!("CARGO_MANIFEST_DIR"),
             "/../../target/wasm32v1-none/release/token.wasm"
         );
         if !std::path::Path::new(token_wasm).exists() {
-            return;
+            require_wasm_artifact(token_wasm);
         }
         let env = Env::default();
         use soroban_sdk::testutils::Address as _;
@@ -1943,7 +1962,8 @@ mod tests {
         if !std::path::Path::new(timelock_wasm).exists()
             || !std::path::Path::new(token_wasm).exists()
         {
-            return;
+            require_wasm_artifact(timelock_wasm);
+            require_wasm_artifact(token_wasm);
         }
         let request = json!({
             "wasmPath": timelock_wasm,
@@ -2016,7 +2036,8 @@ mod tests {
         if !std::path::Path::new(crowdfund_wasm).exists()
             || !std::path::Path::new(token_wasm).exists()
         {
-            return;
+            require_wasm_artifact(crowdfund_wasm);
+            require_wasm_artifact(token_wasm);
         }
         let request = json!({
             "wasmPath": crowdfund_wasm,
@@ -2094,7 +2115,8 @@ mod tests {
         if !std::path::Path::new(claimable_wasm).exists()
             || !std::path::Path::new(token_wasm).exists()
         {
-            return;
+            require_wasm_artifact(claimable_wasm);
+            require_wasm_artifact(token_wasm);
         }
         let request = json!({
             "wasmPath": claimable_wasm,
