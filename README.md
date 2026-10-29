@@ -1,8 +1,32 @@
 # Stellar-Forge Sandbox Runner
 
-Native Rust executable that loads a Soroban contract WASM into an in-process
-Soroban `Env`, deploys it, and invokes requested functions. It is the execution
-engine behind the Stellar-Forge Playground.
+![Stellar-Forge Sandbox Runner](./assets/stellar-forge-sandbox-banner.svg)
+
+[![CI](https://github.com/StellarForgeDev/stellar-forge-sandbox/actions/workflows/ci.yml/badge.svg)](https://github.com/StellarForgeDev/stellar-forge-sandbox/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/StellarForgeDev/stellar-forge/blob/main/LICENSE)
+[![Rust](https://img.shields.io/badge/Rust-native%20runner-orange.svg)](https://www.rust-lang.org/)
+[![Status: Testnet-focused](https://img.shields.io/badge/status-Testnet--focused-6ea8ff.svg)](https://github.com/StellarForgeDev/stellar-forge/blob/main/ROADMAP.md)
+
+Native Rust executable that loads Soroban contract WASM into an in-process
+Soroban `Env`, deploys it, and invokes requested functions. It is the offline,
+artifact-backed execution engine behind the Stellar-Forge Playground.
+
+## Repository role
+
+This repository owns the native execution engine. The contracts repository supplies artifact-backed inputs, and the core application invokes this runner from its Playground API.
+
+```text
+core Playground API ──JSON──► sandbox-runner ──► isolated Soroban Env
+                                      │
+                                      └────────► JSON ScVal report
+```
+
+## Start here
+
+- [Build and test](#build)
+- [Core application](https://github.com/StellarForgeDev/stellar-forge)
+- [Contracts and artifacts](https://github.com/StellarForgeDev/stellar-forge-contracts)
+- [Roadmap](https://github.com/StellarForgeDev/stellar-forge/blob/main/ROADMAP.md)
 
 ## Architecture
 
@@ -47,3 +71,9 @@ cargo clippy --workspace -- -D warnings
 
 MIT — see the main [Stellar-Forge](https://github.com/StellarForgeDev/stellar-forge)
 repository for the full license text.
+
+## Status and boundaries
+
+The runner is a local execution component. It does not prove Testnet deployment, artifact parity, production readiness, or blockchain behavior by itself. It has no wallet, signing, submission, or network role.
+
+Shared [contributing](https://github.com/StellarForgeDev/stellar-forge/blob/main/CONTRIBUTING.md), [security](https://github.com/StellarForgeDev/stellar-forge/blob/main/SECURITY.md), and [code of conduct](https://github.com/StellarForgeDev/stellar-forge/blob/main/CODE_OF_CONDUCT.md) policies are maintained in the core repository. See the [sandbox commit history](https://github.com/StellarForgeDev/stellar-forge-sandbox/commits/main/) as the changelog.
